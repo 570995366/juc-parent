@@ -24,6 +24,7 @@ class MyData{
  *          不可分割，完整性，也就是某个线程正在做某个具体业务的时候，中间不可以被加塞或者被分割，需要整体完整。
  *          要么同时成功，要么同时失败。
  *   2.2. volatile不保证原子性的案例演示
+ *   2.3. 为什么不能保证原子性 参加图：https://app.yinxiang.com/shard/s24/nl/27650695/6d9cbb24-4e69-4ec6-bd87-57e305b4b2cf
  */
 public class volatileDemo {
     public static void main(String[] args) {
