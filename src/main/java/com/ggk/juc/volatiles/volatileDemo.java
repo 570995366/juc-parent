@@ -1,6 +1,7 @@
 package com.ggk.juc.volatiles;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class MyData{
     volatile int number = 0;
@@ -12,6 +13,11 @@ class MyData{
     //请注意，此时number前面是加了volatile关键字修饰的
     public void addPlusPlus(){
         number ++;
+    }
+
+    AtomicInteger atomicInteger = new AtomicInteger();
+    public void addMyAtomic(){
+        atomicInteger.getAndIncrement();
     }
 }
 
@@ -25,15 +31,19 @@ class MyData{
  *          要么同时成功，要么同时失败。
  *   2.2. volatile不保证原子性的案例演示
  *   2.3. 为什么不能保证原子性 参加图：https://app.yinxiang.com/shard/s24/nl/27650695/6d9cbb24-4e69-4ec6-bd87-57e305b4b2cf
+ *   2.4. 如何解决原子性
+ *          * 加synchronized
+ *          * 把int换成AtomicInteger
  */
 public class volatileDemo {
     public static void main(String[] args) {
         MyData myData = new MyData();
 
-        for (int i=0; i < 20; i++){
+        for (int i=1; i <= 20; i++){
             new Thread(()->{
-                for (int j =0; j <= 1000; j++){
+                for (int j =1; j <= 1000; j++){
                     myData.addPlusPlus();
+                    myData.addMyAtomic();
                 }
             },String.valueOf(i)).start();
         }
@@ -48,7 +58,8 @@ public class volatileDemo {
         while (Thread.activeCount() > 2){
             Thread.yield();
         }
-        System.out.println(Thread.currentThread().getName() + " \t finally number value: " + myData.number);
+        System.out.println(Thread.currentThread().getName() + " \t int type finally number value: " + myData.number);
+        System.out.println(Thread.currentThread().getName() + " \t AtomicInteger type finally number value: " + myData.atomicInteger);
     }
 
     private static void seeOkByVolatile() {
