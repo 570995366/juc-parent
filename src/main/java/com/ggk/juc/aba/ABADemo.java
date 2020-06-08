@@ -11,6 +11,7 @@ public class ABADemo {
     static AtomicReference<Integer> atomicReference = new AtomicReference<>(100);
     static AtomicStampedReference<Integer> atomicStampedReference = new AtomicStampedReference<>(100,1);
     public static void main(String[] args) {
+        System.out.println("=========以下是ABA问题的产生===========");
         new Thread(()->{
             atomicReference.compareAndSet(100,101);
             atomicReference.compareAndSet(101,100);
