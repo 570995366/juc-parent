@@ -2,23 +2,15 @@ package com.ggk.juc.notsavelist;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 集合类不安全的问题
  */
 public class ContainerNotSafeDemo {
     public static void main(String[] args) {
-        //List<String> list = new ArrayList<>();
-        List<String> list = new CopyOnWriteArrayList<>();
-        //list.stream().forEach(System.out::println);
-//        List<String> list = Arrays.asList("a","b","c");
-//        list.forEach(System.out::println);
-        for (int i= 1; i<=3;i++) {
-            new Thread(()->{
-                list.add(UUID.randomUUID().toString().substring(0,8));
-                System.out.println(list);
-            },String.valueOf(i)).start();
-        }
+        arrayListNoSafe();
+        setNoSafe();
         //java.util.ConcurrentModificationException
 
         /**
@@ -77,5 +69,32 @@ public class ContainerNotSafeDemo {
          *         }
          *     }
          */
+    }
+
+    public static void arrayListNoSafe(){
+        //List<String> list = new ArrayList<>();
+        List<String> list = new CopyOnWriteArrayList<>();
+        //list.stream().forEach(System.out::println);
+//        List<String> list = Arrays.asList("a","b","c");
+//        list.forEach(System.out::println);
+        for (int i= 1; i<=3;i++) {
+            new Thread(()->{
+                list.add(UUID.randomUUID().toString().substring(0,8));
+                System.out.println(list);
+            },String.valueOf(i)).start();
+        }
+    }
+
+    public static void setNoSafe(){
+        //Set<String> set = new HashSet<>();
+        //Set<String> set = Collections.synchronizedSet(new HashSet<>());
+        Set<String> set = new CopyOnWriteArraySet<>();
+        for (int i= 1; i<=3;i++) {
+            new Thread(()->{
+                set.add(UUID.randomUUID().toString().substring(0,8));
+                System.out.println(set);
+            },String.valueOf(i)).start();
+        }
+        // HashSet底层是HashMap key是当前对象 value是PRESENT恒定值
     }
 }
